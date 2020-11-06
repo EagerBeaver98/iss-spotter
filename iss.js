@@ -13,7 +13,7 @@ const fetchMyIP = (callback) => {
   });
 };
 
-const fetchCoordsByIP = (ip, callback) => {
+const fetchCoordsByIP = (callback) => {
   request('https://geo.ipify.org/api/v1?apiKey=at_baQ5AaOLZcatvi0LyLMGNPHdCWu7A', (error, response, body) => {
     const data = JSON.parse(body);
     if (error) {
@@ -46,5 +46,19 @@ const fetchISSFlyOverTimes = (coords, callback) => {
   });
 };
 
+const nextISSTimeForMyLocation = (callback) => {
+  fetchCoordsByIP((error, coords) => {
+    if (error) {
+      return callback(error, null);
+    }
+    fetchISSFlyOverTimes(coords, (error, nextPasses) => {
+      if (error) {
+        return callback(error, null);
+      }
+      callback(null, nextPasses);
+    });
+  });
+};
 
-module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes };
+
+module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes, nextISSTimeForMyLocation };
